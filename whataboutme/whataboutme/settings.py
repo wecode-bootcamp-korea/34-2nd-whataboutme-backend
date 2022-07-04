@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from my_settings import SECRET_KEY, DATABASES
 
 import pymysql
@@ -42,7 +43,6 @@ MIDDLEWARE = [
     #'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
 ]
 
 ROOT_URLCONF = 'whataboutme.urls'
