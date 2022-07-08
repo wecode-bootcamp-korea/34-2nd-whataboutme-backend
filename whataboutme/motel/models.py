@@ -7,8 +7,8 @@ from user.models import User
 class Motel(models.Model):
     name = models.CharField(max_length=50, unique=True)
     address = models.CharField(max_length=200)
-    latitude = models.DecimalField(max_digits = 10, decimal_places = 7)
-    longitude = models.DecimalField(max_digits = 10, decimal_places = 7)
+    latitude = models.DecimalField(max_digits = 20, decimal_places = 16)
+    longitude = models.DecimalField(max_digits = 20, decimal_places = 16)
     info = models.TextField
 
     class Meta:

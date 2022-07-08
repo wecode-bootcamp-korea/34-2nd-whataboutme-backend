@@ -13,8 +13,6 @@ from json import JSONDecodeError
 
 from user.models import User
 
-sample_ip = 'http://127.0.0.1:8000'
-
 class KakaoGetLoginView(View):
     def get(self, request):
         CLIENT_ID = settings.KAKAO_OAUTH_KEY['KAKAO_REST_API_KEY']
