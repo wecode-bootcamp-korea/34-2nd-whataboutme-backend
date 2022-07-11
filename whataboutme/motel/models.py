@@ -48,3 +48,17 @@ class Reservation(TimestampZone):
 
     class Meta:
         db_table = 'reservations'
+
+class Theme(models.Model):
+    name = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = 'themes'
+
+class RoomTheme(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room_theme")
+    theme = models.ForeignKey(Theme, on_delete=models.CASCADE, related_name="theme_room")
+
+    class Meta:
+        db_table = 'room_themes'
+
