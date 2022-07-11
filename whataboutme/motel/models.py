@@ -24,14 +24,14 @@ class Room(models.Model):
         db_table = 'rooms'
 
 class MotelImage(models.Model):
-    motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="image")
+    motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="motelimage")
     image_url = models.URLField(null=True)
 
     class Meta:
         db_table = 'motel_images'
 
 class RoomImage(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="images")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="roomimages")
     image_url = models.URLField(null=True)
 
     class Meta:
