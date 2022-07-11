@@ -7,8 +7,8 @@ from user.models import User
 class Motel(models.Model):
     name = models.CharField(max_length=50, unique=True)
     address = models.CharField(max_length=200)
-    latitude = models.DecimalField(max_digits = 10, decimal_places = 7)
-    longitude = models.DecimalField(max_digits = 10, decimal_places = 7)
+    latitude = models.DecimalField(max_digits = 20, decimal_places = 16)
+    longitude = models.DecimalField(max_digits = 20, decimal_places = 16)
     info = models.TextField
 
     class Meta:
@@ -17,21 +17,21 @@ class Motel(models.Model):
 class Room(models.Model):
     name = models.CharField(max_length=100)
     motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="motel")
-    original_price = models.DecimalField(max_digits = 10, decimal_places = 2)
-    discount_price = models.DecimalField(max_digits = 10, decimal_places = 2)
+    original_price = models.DecimalField(max_digits = 10, decimal_places = 2, null=True)
+    discount_price = models.DecimalField(max_digits = 10, decimal_places = 2, null=True)
 
     class Meta:
         db_table = 'rooms'
 
 class MotelImage(models.Model):
-    motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="motelimage")
+    motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="motel_image")
     image_url = models.URLField(null=True)
 
     class Meta:
         db_table = 'motel_images'
 
 class RoomImage(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="roomimages")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room_images")
     image_url = models.URLField(null=True)
 
     class Meta:
@@ -39,8 +39,8 @@ class RoomImage(models.Model):
 
 
 class Reservation(TimestampZone):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="reservation_room")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reservation_user")
     name = models.CharField(max_length=50)
     checkin = models.DateField(default = timezone.localtime())
     checkout = models.DateField(default = tomorrow)

@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 from datetime import timedelta
+from haversine import haversine
 
 class TimestampZone(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -12,3 +13,4 @@ class TimestampZone(models.Model):
 
 def tomorrow():
     return timezone.localtime() + timedelta(days=1)
+
