@@ -18,7 +18,7 @@ class MotelListQuery(View) :
             my_latitude = float(request.GET.get('my_latitude'))
             my_longitude = float(request.GET.get('my_longitude'))
             distance = request.GET.get('distance')
-            #themes_list = request.GET.getlist("themes[]", None)
+            theme_list = request.GET.getlist("theme", None)
             checkin = request.GET.get('checkin')
             checkout = request.GET.get('checkout')
             pricemin = request.GET.get('pricemin')
