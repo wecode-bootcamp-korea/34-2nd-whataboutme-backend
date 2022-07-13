@@ -1,6 +1,8 @@
 from django.urls import path
-from motel.views import MotelListQuery
+from motel.views import MotelListQuery, RoomListView
 
 urlpatterns = [
-    path('/motel', MotelListQuery.as_view())
+    path('/list', MotelListQuery.as_view()),
+    path('/rooms', RoomListView.as_view())
 ]
+

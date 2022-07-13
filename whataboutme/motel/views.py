@@ -1,4 +1,5 @@
 import json, jwt, re, datetime, pymysql
+from django import views
 
 from django.http      import JsonResponse, HttpResponse
 from json             import JSONDecodeError
@@ -9,7 +10,9 @@ from decimal          import Decimal
 
 from django.conf      import settings
 
-from motel.models import Motel, Room, Reservation, Theme, RoomTheme
+from motel.models import Motel, Room, Theme, RoomTheme
+from reservations.models import Reservation
+from motel.utils import distance_cal
 
 
 class MotelListQuery(View) : 
@@ -47,6 +50,8 @@ class MotelListQuery(View) :
                 q &= Q(rooms__discount_price__gte = pricemin)
                 q &= Q(rooms__discount_price__lte = pricemax)
 
+            
+
             # 쿼리(모텔기준으로 해야함)
             motels = Motel.objects.filter(q) \
                 .prefetch_related('rooms', 'rooms__reservationrooms', 'rooms__roomthemes').order_by('id').distinct() \
@@ -63,6 +68,7 @@ class MotelListQuery(View) :
                     'id' : motel.id,
                     'name' : motel.name,
                     'address' : motel.address,
+                    'distance' : distance_cal(my_latitude, my_longitude, motel.latitude, motel.longitude)
 
                 } for motel in motels
             ]
@@ -72,3 +78,49 @@ class MotelListQuery(View) :
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
 
+class RoomListView(View):
+    def get(self, request):
+        try :
+            motel_id = request.GET.get('motel_id')
+            checkin = request.GET.get('checkin')
+            checkout = request.GET.get('checkout')
+
+            q = Q()
+
+            # q1  = Q()
+
+            if motel_id :
+                q &= Q(motel_id = motel_id)
+
+            if checkin and checkout :
+                # pass
+                q &= ~Q(reservationrooms__checkin__gt=checkin, reservationrooms__checkout__lt=checkout)
+                #Q(reservationrooms__checkin__range = [checkin, checkout]))
+
+            room_list = Room.objects.filter(q) \
+                .prefetch_related('motel', 'roomthemes', 'reservationrooms' )
+                #.order_by('id').distinct() \
+                #.annotate()
+
+
+            # results = [
+            #     {
+            #         'id' : room.id,
+            #         'name' : room.name,
+            #         'price' : room.discount_price,x
+            #         'theme' : [{
+            #             'name' : themes.theme.name
+            #             }for themes in room.roomthemes.all()],
+            #     } for room in room_list
+            # ]
+
+            results = [
+                {
+                    'id' : room.id
+                } for room in room_list
+            ]
+            return JsonResponse({"message": 'SUCCESS', 'result' : results}, status=200)
+        except JSONDecodeError:
+            return JsonResponse({'message' : 'JSON_DECODE_ERROR'}, status=400)
+        except KeyError:
+            return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
