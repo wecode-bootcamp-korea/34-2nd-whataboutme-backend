@@ -16,7 +16,7 @@ class Motel(models.Model):
 
 class Room(models.Model):
     name = models.CharField(max_length=100)
-    motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="motel")
+    motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="rooms")
     original_price = models.DecimalField(max_digits = 10, decimal_places = 2, null=True)
     discount_price = models.DecimalField(max_digits = 10, decimal_places = 2, null=True)
 
@@ -24,14 +24,14 @@ class Room(models.Model):
         db_table = 'rooms'
 
 class MotelImage(models.Model):
-    motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="motel_image")
+    motel = models.ForeignKey(Motel, on_delete=models.CASCADE, related_name="motelimages")
     image_url = models.URLField(null=True)
 
     class Meta:
         db_table = 'motel_images'
 
 class RoomImage(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room_images")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="roomimages")
     image_url = models.URLField(null=True)
 
     class Meta:
@@ -39,8 +39,8 @@ class RoomImage(models.Model):
 
 
 class Reservation(TimestampZone):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="reservation_room")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reservation_user")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="reservationrooms")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reservationusers")
     name = models.CharField(max_length=50)
     checkin = models.DateField(default = timezone.localtime())
     checkout = models.DateField(default = tomorrow)
@@ -56,8 +56,8 @@ class Theme(models.Model):
         db_table = 'themes'
 
 class RoomTheme(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room_theme")
-    theme = models.ForeignKey(Theme, on_delete=models.CASCADE, related_name="theme_room")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="roomthemes")
+    theme = models.ForeignKey(Theme, on_delete=models.CASCADE, related_name="themerooms")
 
     class Meta:
         db_table = 'room_themes'

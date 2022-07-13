@@ -4,8 +4,8 @@ from django.http      import JsonResponse, HttpResponse
 from json             import JSONDecodeError
 from django.views     import View
 from django.db.models import Q
-from haversine import haversine
-from decimal import Decimal
+from haversine        import haversine
+from decimal          import Decimal
 
 from django.conf      import settings
 
@@ -27,39 +27,44 @@ class MotelListQuery(View) :
             q = Q()
 
             # 거리 필터링
+            # distance에 따라 사전 쿼리값변견
             if my_latitude and my_longitude :
-                q &= Q(motel__latitude__range = (my_latitude - 0.025, my_latitude + 0.025 )) 
-                q &= Q(motel__longitude__range = (my_longitude - 0.035, my_longitude + 0.035))
-                #range 함수 문제
+                q &= Q(latitude__range = (my_latitude - 0.025, my_latitude + 0.025 )) 
+                q &= Q(longitude__range = (my_longitude - 0.035, my_longitude + 0.035))
+            
 
-            # 테마 필터링
+            # 테마 필터링(
+            if theme_list : 
+                q &= Q(rooms__roomthemes_theme__in = theme_list )
 
             # 체크인아웃 필터링
             if checkin and checkout :
-                q &= ~((Q(reservation_room__checkout__gt = checkin) & Q(reservation_room__checkin__lte = checkin)) |
-                Q(reservation_room__checkin__range = [checkin, checkout]))
+                q &= ~((Q(rooms__reservationrooms_checkout__gt = checkin) & Q(rooms__reservationrooms_checkin__lte = checkin)) |
+                Q(rooms__reservationrooms__checkin__range = [checkin, checkout]))
 
             #가격 필터링
             if pricemin and pricemax :
-                q &= (Q(discount_price__gte = pricemin) & Q(discount_price__lte = pricemax))
+                q &= Q(rooms__discount_price__gte = pricemin)
+                q &= Q(rooms__discount_price__lte = pricemax)
 
-            motel_query = Room.objects.filter(q) \
-                .prefetch_related('motel', 'reservation_room', 'room_theme' )
+            # 쿼리(모텔기준으로 해야함)
+            motels = Motel.objects.filter(q) \
+                .prefetch_related('rooms', 'rooms__reservationrooms', 'rooms__roomthemes').order_by('id').distinct() \
+                .annotate()
 
 
-        #     # motel = 룸과 연결된 모텔
-        #     # reservation_room = 예약 
-        #     # room_theme = 룸테마
-            
+            # motel = 룸과 연결된 모텔
+            # reservation_room = 예약 
+            # room_theme = 룸테마
 
 
             results = [
                 {
-                    'id' : room.motel.id,
-                    'name' : room.motel.name,
-                    'address' : room.motel.address,
+                    'id' : motel.id,
+                    'name' : motel.name,
+                    'address' : motel.address,
 
-                } for room in motel_query
+                } for motel in motels
             ]
             return JsonResponse({"message": 'SUCCESS', 'result' : results}, status=200)
         except JSONDecodeError:
