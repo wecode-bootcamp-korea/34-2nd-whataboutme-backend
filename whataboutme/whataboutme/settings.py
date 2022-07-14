@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'core',
     'motels',
     'users',
+    'reservations',
 ]
 
 MIDDLEWARE = [
@@ -144,3 +145,21 @@ CORS_ALLOW_HEADERS = (
 APPEND_SLASH = False
 
 KAKAO_OAUTH_KEY = KAKAO_OAUTH_KEY
+
+LOGGING = {
+    'disable_existing_loggers': False,
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
