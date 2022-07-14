@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from my_settings import SECRET_KEY, DATABASES
+from my_settings import SECRET_KEY, DATABASES, KAKAO_OAUTH_KEY
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -34,8 +34,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'core',
-    'motel',
-    'user',
+    'motels',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -142,3 +142,5 @@ CORS_ALLOW_HEADERS = (
 )
 
 APPEND_SLASH = False
+
+KAKAO_OAUTH_KEY = KAKAO_OAUTH_KEY
