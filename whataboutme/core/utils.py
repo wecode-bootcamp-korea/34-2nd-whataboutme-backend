@@ -1,14 +1,15 @@
 from django.db import models
 from django.utils import timezone
 
+from decimal import Decimal
+
 from datetime import timedelta
+from haversine import haversine
 
-class TimestampZone(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+def distance_cal (my_latitude, my_longitude, motel_latitude, motel_longitude):
+    my_location = (my_latitude, my_longitude)
+    motel_location = (motel_latitude, motel_longitude)
+    
+    distance = haversine(my_location, motel_location, unit = 'km')
 
-    class Meta:
-        abstract = True
-
-def tomorrow():
-    return timezone.localtime() + timedelta(days=1)
+    return distance

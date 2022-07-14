@@ -38,3 +38,23 @@ class KakaoSignInCallbackView(View):
 
         except KeyError:
             return JsonResponse({"message": "KEY_ERROR"}, status=400)
+
+class MakeUser(View):
+    def post(self, request):
+        try :
+            name = request.GET.get('name')
+            kakao_id = request.GET.get('kakao_id')
+            nickname = request.GET.get('nickname')
+            email = request.GET.get('email')
+
+            User.objects.create(
+                name = name,
+                kakao_id = kakao_id,
+                nickname = nickname,
+                email = email
+            )
+
+            return JsonResponse({"message" : 'SUCCESS'})
+
+        except KeyError:
+            return JsonResponse({"message": "KEY_ERROR"}, status=400)
