@@ -1,5 +1,5 @@
 from django.db import models
-<<<<<<< HEAD
+
 from django.utils import timezone
 
 from datetime import timedelta
@@ -13,7 +13,3 @@ class TimestampZone(models.Model):
 
 def tomorrow():
      return timezone.localtime() + timedelta(days=1)
-=======
-
-# Create your models here.
->>>>>>> 66e5923 (ADD : Database made)
